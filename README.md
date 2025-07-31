@@ -38,3 +38,19 @@
 ### 구현 방식
 - OS: 세마포어, 뮤텍스, 경쟁 조건 등의 동기화 기법 사용
 - Java: synchronized, wait(), notify(), notifyAll() 메서드
+
+## 결과 테스트
+<img width="600" height="288" alt="image" src="https://github.com/user-attachments/assets/ddfdcacb-1445-436b-b4de-8e4b3435a8bc" />    
+   
+> Producer는 1부터 4까지의 값을 바구니에 반복적으로 넣고, Consumer는 바구니에서 값을 하나씩 꺼내 감소시킨다.
+> 두 작업 사이에 P(acquire) 함수와 V(release) 함수를 구현하여 경합 상태를 방지하면, 작업 결과에 영향을 주지 않고 프로그램이 정상적으로 동작함을 확인할 수 있다.
+> 
+> 이제 Producer가 계속해서 값을 넣고 있는데도 Consumer에 Lock이 걸려 있지 않은 상황을 가정해 보자.
+> 이 가정을 실험적으로 구현하기 위해, Que 클래스의 smpConsumer.release 메서드를 주석 처리한다.
+
+
+<img width="540" height="392" alt="image" src="https://github.com/user-attachments/assets/5735bd78-57d2-424f-93ca-4d08ef408b5e" />   
+   
+> 이렇게 실행하면 아래와 같이 Producer의 코드만 출력되고 terminal에 커서가 깜빡이면서 무한 loop 상태에 빠지게 된다.
+> <img width="543" height="119" alt="image" src="https://github.com/user-attachments/assets/8f597982-d5fb-4da7-b9b0-3e45f436e24c" />
+
