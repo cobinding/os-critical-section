@@ -56,6 +56,8 @@
 > 이제 Producer가 계속해서 값을 넣고 있는데도 Consumer에 Lock이 걸려 있지 않은 상황을 가정해 보자.
 > 이 가정을 실험적으로 구현하기 위해, Que 클래스의 smpConsumer.release 메서드를 주석 처리한다.
 
+- acquire(P): Java object 클래스의 `wait()` 활용 - 임계구역을 사용할 수 없을 때, 객체가 가진 고유락을 해제시키고 대기한다. 다른 스레드가 release()를 호출해서 임계 구역에 자원을 넣어줄 수 있도록 한다. 
+- release: Java object 클래스의 `notify()` 활용 - 임계구역에 자원을 추가하고, 작업 뒤에 자고 있는 다음 스레드를 깨워서 자원을 소비할 수 잇도록 한다.
 
 <img width="540" height="392" alt="image" src="https://github.com/user-attachments/assets/5735bd78-57d2-424f-93ca-4d08ef408b5e" />   
    
