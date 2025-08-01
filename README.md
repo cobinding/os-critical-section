@@ -48,7 +48,30 @@
 - Java: synchronized, wait(), notify(), notifyAll() 메서드
 
 ## 결과 테스트
-<img width="600" height="288" alt="image" src="https://github.com/user-attachments/assets/ddfdcacb-1445-436b-b4de-8e4b3435a8bc" />    
+<img width="400" height="200" alt="image" src="https://github.com/user-attachments/assets/608ab3bb-4161-4d11-b06b-f2c8a738f69e" />
+
+#### 세마포어가 하는 일:
+  1. 동기화(Synchronization): Producer와 Consumer가 동시에 critical
+  section(item 변수)에 접근하지 못하게 함
+  2. 순서 보장: Producer가 생산한 후에만 Consumer가 소비하도록 순서를 강제
+
+#### 작동 원리:
+  - smpProducer = 1: Producer가 먼저 시작 가능
+  - smpConsumer = 0: Consumer는 대기 상태로 시작
+
+#### 실행 흐름:
+  1. Producer가 acquire() → 1에서 0으로 (진입)
+  2. 아이템 생산
+  3. Consumer에게 release() → Consumer 세마포어 0에서 1로
+  4. Consumer가 acquire() → 1에서 0으로 (진입)
+  5. 아이템 소비
+  6. Producer에게 release() → Producer 세마포어 0에서 1로
+
+- acquire(P): Java object 클래스의 `wait()` 활용 - 임계구역을 사용할 수 없을 때, 객체가 가진 고유락을 해제시키고 대기한다. 다른 스레드가 release()를 호출해서 임계 구역에 자원을 넣어줄 수 있도록 한다. 
+- release: Java object 클래스의 `notify()` 활용 - 임계구역에 자원을 추가하고, 작업 뒤에 자고 있는 다음 스레드를 깨워서 자원을 소비할 수 잇도록 한다.
+
+이렇게 핑퐁 방식으로 교대로 실행되어 "생산1-소비1-생산2-소비2" 순서가 보장된다. 세마포어 없이는 두 스레드가 동시에 item 변수에 접근해서 데이터 경쟁(race condition)이 발생할 수 있습니다.
+   
    
 > Producer는 1부터 4까지의 값을 바구니에 반복적으로 넣고, Consumer는 바구니에서 값을 하나씩 꺼내 감소시킨다.
 > 두 작업 사이에 P(acquire) 함수와 V(release) 함수를 구현하여 경합 상태를 방지하면, 작업 결과에 영향을 주지 않고 프로그램이 정상적으로 동작함을 확인할 수 있다.
@@ -56,11 +79,11 @@
 > 이제 Producer가 계속해서 값을 넣고 있는데도 Consumer에 Lock이 걸려 있지 않은 상황을 가정해 보자.
 > 이 가정을 실험적으로 구현하기 위해, Que 클래스의 smpConsumer.release 메서드를 주석 처리한다.
 
-- acquire(P): Java object 클래스의 `wait()` 활용 - 임계구역을 사용할 수 없을 때, 객체가 가진 고유락을 해제시키고 대기한다. 다른 스레드가 release()를 호출해서 임계 구역에 자원을 넣어줄 수 있도록 한다. 
-- release: Java object 클래스의 `notify()` 활용 - 임계구역에 자원을 추가하고, 작업 뒤에 자고 있는 다음 스레드를 깨워서 자원을 소비할 수 잇도록 한다.
 
-<img width="540" height="392" alt="image" src="https://github.com/user-attachments/assets/5735bd78-57d2-424f-93ca-4d08ef408b5e" />   
+<img width="452" height="300" alt="image" src="https://github.com/user-attachments/assets/393bbe53-0d82-44a5-83b7-1feeb41bab2d" />
+
    
 > 이렇게 실행하면 아래와 같이 Producer의 코드만 출력되고 terminal에 커서가 깜빡이면서 무한 loop 상태에 빠지게 된다.
+> 
 > <img width="543" height="119" alt="image" src="https://github.com/user-attachments/assets/8f597982-d5fb-4da7-b9b0-3e45f436e24c" />
 
