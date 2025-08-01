@@ -55,23 +55,10 @@
   section(item 변수)에 접근하지 못하게 함
   2. 순서 보장: Producer가 생산한 후에만 Consumer가 소비하도록 순서를 강제
 
-#### 작동 원리:
-  - smpProducer = 1: Producer가 먼저 시작 가능
-  - smpConsumer = 0: Consumer는 대기 상태로 시작
-
-#### 실행 흐름:
-  1. Producer가 acquire() → 1에서 0으로 (진입)
-  2. 아이템 생산
-  3. Consumer에게 release() → Consumer 세마포어 0에서 1로
-  4. Consumer가 acquire() → 1에서 0으로 (진입)
-  5. 아이템 소비
-  6. Producer에게 release() → Producer 세마포어 0에서 1로
-
 - acquire(P): Java object 클래스의 `wait()` 활용 - 임계구역을 사용할 수 없을 때, 객체가 가진 고유락을 해제시키고 대기한다. 다른 스레드가 release()를 호출해서 임계 구역에 자원을 넣어줄 수 있도록 한다. 
 - release: Java object 클래스의 `notify()` 활용 - 임계구역에 자원을 추가하고, 작업 뒤에 자고 있는 다음 스레드를 깨워서 자원을 소비할 수 잇도록 한다.
 
-이렇게 핑퐁 방식으로 교대로 실행되어 "생산1-소비1-생산2-소비2" 순서가 보장된다. 세마포어 없이는 두 스레드가 동시에 item 변수에 접근해서 데이터 경쟁(race condition)이 발생할 수 있습니다.
-   
+"생산1-소비1-생산2-소비2" 순서가 보장된다. 세마포어 없이는 두 스레드가 동시에 item 변수에 접근해서 데이터 경쟁(race condition)이 발생할 수 있습니다.
    
 > Producer는 1부터 4까지의 값을 바구니에 반복적으로 넣고, Consumer는 바구니에서 값을 하나씩 꺼내 감소시킨다.
 > 두 작업 사이에 P(acquire) 함수와 V(release) 함수를 구현하여 경합 상태를 방지하면, 작업 결과에 영향을 주지 않고 프로그램이 정상적으로 동작함을 확인할 수 있다.
