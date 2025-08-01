@@ -6,17 +6,16 @@ public class Que {
     int item;
 
     void get() throws InterruptedException{
-        smpConsumer.acquire();
-        item--;
+        smpConsumer.acquire(); // 생산
         System.out.println("Consumer consumed item: " + item);
-        smpProducer.release();
+        smpProducer.release(); // Consumer에게 알림
     }
 
     void put(int item) throws InterruptedException{
         smpProducer.acquire();
         System.out.println("Producer produced item: " + item);
         this.item = item;
-       // smpConsumer.release();
+        smpConsumer.release();
 
     }
 }
